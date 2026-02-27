@@ -435,7 +435,7 @@ export default function Home() {
             <p className="text-[#94a3b8] text-sm leading-relaxed">
               Envía ambos archivos (.md y .pdf) a{' '}
               <a href="mailto:contacto@tecnicore.com" style={{ color: '#00E5FF' }} className="font-semibold">
-                contacto@tecnicore.com
+                tecnicorenotion@gmail.com
               </a>
             </p>
           </motion.div>
