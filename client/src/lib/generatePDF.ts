@@ -19,48 +19,53 @@ export async function generateBriefPDF(data: BriefFormData): Promise<void> {
   const contentWidth = pageWidth - margin * 2;
   let y = margin;
 
-  // ─── Color palette ───────────────────────────────────────
-  const BLACK = [10, 10, 15] as [number, number, number];
-  const CYAN = [0, 229, 255] as [number, number, number];
-  const WHITE = [255, 255, 255] as [number, number, number];
-  const GRAY_LIGHT = [240, 244, 248] as [number, number, number];
-  const GRAY_MID = [148, 163, 184] as [number, number, number];
-  const DARK_CARD = [17, 17, 24] as [number, number, number];
-  const BORDER = [30, 30, 46] as [number, number, number];
+  // ─── Color palette (Professional B&W) ───────────────────
+  const BLACK       = [10, 10, 10]    as [number, number, number];
+  const DARK_GRAY   = [40, 40, 40]    as [number, number, number];
+  const MEDIUM_GRAY = [100, 100, 100] as [number, number, number];
+  const LIGHT_GRAY  = [220, 220, 220] as [number, number, number];
+  const SOFT_WHITE  = [245, 245, 245] as [number, number, number];
+  const WHITE       = [255, 255, 255] as [number, number, number];
+  const ACCENT      = [30, 30, 30]    as [number, number, number];
 
   // ─── Helper functions ────────────────────────────────────
 
   function checkNewPage(neededHeight: number) {
     if (y + neededHeight > pageHeight - margin) {
       doc.addPage();
-      // Add header to new page
-      doc.setFillColor(...BLACK);
+      doc.setFillColor(...WHITE);
       doc.rect(0, 0, pageWidth, pageHeight, 'F');
-      doc.setFillColor(...DARK_CARD);
+      // Header bar
+      doc.setFillColor(...SOFT_WHITE);
       doc.rect(0, 0, pageWidth, 12, 'F');
-      doc.setTextColor(...CYAN);
+      doc.setFillColor(...DARK_GRAY);
+      doc.rect(0, 0, pageWidth, 1.5, 'F');
+      doc.setTextColor(...DARK_GRAY);
       doc.setFontSize(7);
       doc.setFont('helvetica', 'bold');
       doc.text('TECNICOR — BRIEF DE PROYECTO', margin, 8);
-      doc.setTextColor(...GRAY_MID);
-      doc.text(`${data.clientName || 'Cliente'} · ${new Date().toLocaleDateString('es-CO')}`, pageWidth - margin, 8, { align: 'right' });
+      doc.setTextColor(...MEDIUM_GRAY);
+      doc.text(
+        `${data.clientName || 'Cliente'} · ${new Date().toLocaleDateString('es-CO')}`,
+        pageWidth - margin,
+        8,
+        { align: 'right' }
+      );
       y = 20;
     }
   }
 
   function drawSectionHeader(title: string, icon: string) {
     checkNewPage(20);
-    // Section background
-    doc.setFillColor(...DARK_CARD);
+    doc.setFillColor(...SOFT_WHITE);
     doc.roundedRect(margin, y, contentWidth, 10, 2, 2, 'F');
-    // Cyan left border
-    doc.setFillColor(...CYAN);
-    doc.rect(margin, y, 2, 10, 'F');
-    // Icon + title
-    doc.setTextColor(...CYAN);
+    // Left accent bar — dark
+    doc.setFillColor(...DARK_GRAY);
+    doc.rect(margin, y, 2.5, 10, 'F');
+    doc.setTextColor(...DARK_GRAY);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${icon}  ${title.toUpperCase()}`, margin + 6, y + 6.5);
+    doc.text(`${icon}  ${title.toUpperCase()}`, margin + 7, y + 6.5);
     y += 14;
   }
 
@@ -72,10 +77,10 @@ export async function generateBriefPDF(data: BriefFormData): Promise<void> {
     checkNewPage(16);
 
     // Label
-    doc.setTextColor(...GRAY_MID);
+    doc.setTextColor(...MEDIUM_GRAY);
     doc.setFontSize(7.5);
-    doc.setFont('helvetica', 'normal');
-    doc.text(label, margin + 4, y);
+    doc.setFont('helvetica', 'bold');
+    doc.text(label.toUpperCase(), margin + 4, y);
     y += 4;
 
     // Value box
@@ -84,11 +89,12 @@ export async function generateBriefPDF(data: BriefFormData): Promise<void> {
 
     checkNewPage(boxHeight + 4);
 
-    doc.setFillColor(13, 13, 24);
-    doc.setDrawColor(...BORDER);
+    doc.setFillColor(...WHITE);
+    doc.setDrawColor(...LIGHT_GRAY);
+    doc.setLineWidth(0.3);
     doc.roundedRect(margin + 4, y, contentWidth - 8, boxHeight, 1.5, 1.5, 'FD');
 
-    doc.setTextColor(...GRAY_LIGHT);
+    doc.setTextColor(...DARK_GRAY);
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
     doc.text(lines, margin + 8, y + 5);
@@ -98,76 +104,71 @@ export async function generateBriefPDF(data: BriefFormData): Promise<void> {
 
   // ─── PAGE 1: Cover ───────────────────────────────────────
 
-  // Background
-  doc.setFillColor(...BLACK);
+  // White background
+  doc.setFillColor(...WHITE);
   doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // Top accent bar
-  doc.setFillColor(...CYAN);
-  doc.rect(0, 0, pageWidth, 3, 'F');
+  // Top accent bar — solid dark
+  doc.setFillColor(...DARK_GRAY);
+  doc.rect(0, 0, pageWidth, 4, 'F');
 
-  // Hero section background
-  doc.setFillColor(13, 17, 30);
-  doc.rect(0, 3, pageWidth, 80, 'F');
+  // Hero area background
+  doc.setFillColor(...SOFT_WHITE);
+  doc.rect(0, 4, pageWidth, 76, 'F');
 
-  // Decorative grid lines (subtle)
-  doc.setDrawColor(0, 229, 255, 0.08);
-  doc.setLineWidth(0.1);
-  for (let i = 0; i < 10; i++) {
-    doc.line(0, 3 + i * 8, pageWidth, 3 + i * 8);
-  }
-
-  // Logo area
-  doc.setTextColor(...CYAN);
+  // Logo / Brand name
+  doc.setTextColor(...BLACK);
   doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
   doc.text('TECNICOR', margin, 30);
 
-  doc.setTextColor(...GRAY_MID);
+  doc.setTextColor(...MEDIUM_GRAY);
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
-  doc.text('SERVICIOS PROFESIONALES', margin, 36);
+  doc.text('SERVICIOS PROFESIONALES', margin, 37);
 
-  // Divider line
-  doc.setDrawColor(...CYAN);
-  doc.setLineWidth(0.5);
-  doc.line(margin, 40, margin + 40, 40);
+  // Divider
+  doc.setDrawColor(...DARK_GRAY);
+  doc.setLineWidth(0.8);
+  doc.line(margin, 41, margin + 40, 41);
 
-  // "BRIEF DE PROYECTO" title
-  doc.setTextColor(...WHITE);
+  // Main title
+  doc.setTextColor(...BLACK);
   doc.setFontSize(28);
   doc.setFont('helvetica', 'bold');
   doc.text('BRIEF DE', margin, 58);
-  doc.setTextColor(...CYAN);
+  doc.setTextColor(...DARK_GRAY);
   doc.text('PROYECTO', margin, 68);
 
   // Client info card
-  doc.setFillColor(...DARK_CARD);
-  doc.setDrawColor(...BORDER);
+  doc.setFillColor(...WHITE);
+  doc.setDrawColor(...LIGHT_GRAY);
+  doc.setLineWidth(0.4);
   doc.roundedRect(margin, 88, contentWidth, 40, 3, 3, 'FD');
 
-  // Cyan left accent
-  doc.setFillColor(...CYAN);
+  // Left accent — dark
+  doc.setFillColor(...DARK_GRAY);
   doc.rect(margin, 88, 3, 40, 'F');
 
-  doc.setTextColor(...GRAY_MID);
+  doc.setTextColor(...MEDIUM_GRAY);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'normal');
   doc.text('CLIENTE', margin + 8, 97);
-  doc.setTextColor(...WHITE);
+
+  doc.setTextColor(...BLACK);
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
   doc.text(data.clientName || 'Sin nombre', margin + 8, 105);
 
   if (data.clientCompany) {
-    doc.setTextColor(...CYAN);
+    doc.setTextColor(...DARK_GRAY);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.text(data.clientCompany, margin + 8, 112);
   }
 
   if (data.clientEmail) {
-    doc.setTextColor(...GRAY_MID);
+    doc.setTextColor(...MEDIUM_GRAY);
     doc.setFontSize(8);
     doc.text(`✉  ${data.clientEmail}`, margin + 8, 120);
   }
@@ -185,49 +186,66 @@ export async function generateBriefPDF(data: BriefFormData): Promise<void> {
       contenido: 'CONTENIDO DIGITAL',
       otro: 'OTRO',
     };
-    doc.setFillColor(0, 229, 255, 0.1);
-    doc.setDrawColor(...CYAN);
-    doc.roundedRect(margin, 135, 70, 10, 2, 2, 'FD');
-    doc.setTextColor(...CYAN);
+    doc.setFillColor(...DARK_GRAY);
+    doc.roundedRect(margin, 135, 70, 10, 2, 2, 'F');
+    doc.setTextColor(...WHITE);
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'bold');
-    doc.text(projectLabels[data.projectType] || data.projectType.toUpperCase(), margin + 5, 141.5);
+    doc.text(
+      projectLabels[data.projectType] || data.projectType.toUpperCase(),
+      margin + 5,
+      141.5
+    );
   }
 
   // Date and metadata
-  doc.setTextColor(...GRAY_MID);
+  doc.setTextColor(...MEDIUM_GRAY);
   doc.setFontSize(7.5);
   doc.setFont('helvetica', 'normal');
-  const dateStr = new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+  const dateStr = new Date().toLocaleDateString('es-CO', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
   doc.text(`Generado el ${dateStr}`, margin, 155);
   doc.text(`Sector: ${data.clientSector || 'No especificado'}`, margin, 161);
 
   // Bottom bar
-  doc.setFillColor(...DARK_CARD);
+  doc.setFillColor(...SOFT_WHITE);
   doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
-  doc.setFillColor(...CYAN);
+  doc.setFillColor(...DARK_GRAY);
   doc.rect(0, pageHeight - 20, pageWidth, 1, 'F');
-  doc.setTextColor(...GRAY_MID);
+  doc.setTextColor(...MEDIUM_GRAY);
   doc.setFontSize(7);
-  doc.text('tecnicore.com  ·  contacto@tecnicore.com  ·  +57 300 533 5148', pageWidth / 2, pageHeight - 10, { align: 'center' });
+  doc.text(
+    'tecnicore.com  ·  contacto@tecnicore.com  ·  +57 300 533 5148',
+    pageWidth / 2,
+    pageHeight - 10,
+    { align: 'center' }
+  );
 
   // ─── PAGE 2+: Content ────────────────────────────────────
 
   doc.addPage();
-  doc.setFillColor(...BLACK);
+  doc.setFillColor(...WHITE);
   doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
   // Page header
-  doc.setFillColor(...DARK_CARD);
+  doc.setFillColor(...SOFT_WHITE);
   doc.rect(0, 0, pageWidth, 12, 'F');
-  doc.setFillColor(...CYAN);
+  doc.setFillColor(...DARK_GRAY);
   doc.rect(0, 0, pageWidth, 1.5, 'F');
-  doc.setTextColor(...CYAN);
+  doc.setTextColor(...DARK_GRAY);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'bold');
   doc.text('TECNICOR — BRIEF DE PROYECTO', margin, 8);
-  doc.setTextColor(...GRAY_MID);
-  doc.text(`${data.clientName || 'Cliente'} · ${new Date().toLocaleDateString('es-CO')}`, pageWidth - margin, 8, { align: 'right' });
+  doc.setTextColor(...MEDIUM_GRAY);
+  doc.text(
+    `${data.clientName || 'Cliente'} · ${new Date().toLocaleDateString('es-CO')}`,
+    pageWidth - margin,
+    8,
+    { align: 'right' }
+  );
 
   y = 22;
 
@@ -351,7 +369,14 @@ export async function generateBriefPDF(data: BriefFormData): Promise<void> {
   if (data.budgetRange) drawField('Presupuesto específico', data.budgetRange);
   if (data.deadline) {
     const deadlineDate = new Date(data.deadline + 'T00:00:00');
-    drawField('Fecha límite', deadlineDate.toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }));
+    drawField(
+      'Fecha límite',
+      deadlineDate.toLocaleDateString('es-CO', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    );
   }
   const deliveryLabels: Record<string, string> = {
     editables: 'Archivos editables (AI, PSD, Figma)',
@@ -359,7 +384,10 @@ export async function generateBriefPDF(data: BriefFormData): Promise<void> {
     ambos: 'Ambos formatos',
   };
   drawField('Formato de entrega', data.deliveryFormat.map((d) => deliveryLabels[d] || d));
-  drawField('Revisiones incluidas', data.revisions === 'a_definir' ? 'A definir' : `${data.revisions} revisión(es)`);
+  drawField(
+    'Revisiones incluidas',
+    data.revisions === 'a_definir' ? 'A definir' : `${data.revisions} revisión(es)`
+  );
   if (data.additionalServices) drawField('Servicios adicionales', data.additionalServices);
 
   // ─── Footer on last page ──────────────────────────────────
@@ -367,35 +395,53 @@ export async function generateBriefPDF(data: BriefFormData): Promise<void> {
   y += 8;
 
   // Summary box
-  doc.setFillColor(0, 229, 255, 0.05);
-  doc.setDrawColor(...CYAN);
+  doc.setFillColor(...SOFT_WHITE);
+  doc.setDrawColor(...LIGHT_GRAY);
   doc.setLineWidth(0.3);
   doc.roundedRect(margin, y, contentWidth, 20, 3, 3, 'FD');
-  doc.setTextColor(...CYAN);
+  // Left accent
+  doc.setFillColor(...DARK_GRAY);
+  doc.rect(margin, y, 2.5, 20, 'F');
+  doc.setTextColor(...BLACK);
   doc.setFontSize(8);
   doc.setFont('helvetica', 'bold');
-  doc.text('¿Listo para comenzar?', margin + 5, y + 7);
-  doc.setTextColor(...GRAY_MID);
+  doc.text('¿Listo para comenzar?', margin + 7, y + 7);
+  doc.setTextColor(...MEDIUM_GRAY);
   doc.setFontSize(7.5);
   doc.setFont('helvetica', 'normal');
-  doc.text('El equipo de Tecnicor revisará tu brief y se pondrá en contacto contigo a la brevedad.', margin + 5, y + 13);
-  doc.text('contacto@tecnicore.com  ·  +57 300 533 5148  ·  tecnicore.com', margin + 5, y + 18);
+  doc.text(
+    'El equipo de Tecnicor revisará tu brief y se pondrá en contacto contigo a la brevedad.',
+    margin + 7,
+    y + 13
+  );
+  doc.text(
+    'contacto@tecnicore.com  ·  +57 300 533 5148  ·  tecnicore.com',
+    margin + 7,
+    y + 18
+  );
 
-  // Page numbers
+  // ─── Page numbers ─────────────────────────────────────────
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
-    doc.setFillColor(...DARK_CARD);
+    doc.setFillColor(...SOFT_WHITE);
     doc.rect(0, pageHeight - 10, pageWidth, 10, 'F');
-    doc.setTextColor(...GRAY_MID);
+    doc.setFillColor(...LIGHT_GRAY);
+    doc.rect(0, pageHeight - 10, pageWidth, 0.5, 'F');
+    doc.setTextColor(...MEDIUM_GRAY);
     doc.setFontSize(7);
-    doc.text(`Página ${i} de ${totalPages}`, pageWidth - margin, pageHeight - 4, { align: 'right' });
+    doc.text(
+      `Página ${i} de ${totalPages}`,
+      pageWidth - margin,
+      pageHeight - 4,
+      { align: 'right' }
+    );
     if (i > 1) {
       doc.text('TECNICOR — BRIEF DE PROYECTO CONFIDENCIAL', margin, pageHeight - 4);
     }
   }
 
-  // Save
+  // ─── Save ─────────────────────────────────────────────────
   const fileName = `Tecnicor_Brief_${(data.clientName || 'Cliente').replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
   doc.save(fileName);
 }
