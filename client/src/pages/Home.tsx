@@ -181,12 +181,12 @@ export default function Home() {
           >
             <div className="inline-flex items-center gap-3 mb-2">
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center font-display font-black text-lg"
-                style={{ background: '#00E5FF', color: '#0a0a0f' }}
+                className="w-30 h-30 rounded-full flex items-center justify-center font-display font-black text-lg"
               >
-                T
+                
+              <img src="/logo.png" alt="logo" className="w-20 h-20 object-contain" />
               </div>
-              <span className="font-display font-bold text-xl text-white tracking-wider">TECNICOR</span>
+              <img src="/nombre.png" alt="nombre" className="w-35 h-35 flex relative right-10 object-contain" />
             </div>
           </motion.div>
 
@@ -455,12 +455,12 @@ export default function Home() {
       >
         <div className="flex items-center gap-3">
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center font-display font-black text-sm"
-            style={{ background: '#00E5FF', color: '#0a0a0f' }}
+            className="w-20 h-20 rounded-full flex items-center justify-center font-display font-black text-sm"
           >
-            T
+            <img src="/logo.png" alt="logonav" className="w-15 h-15 object-contain" />
           </div>
-          <span className="font-display font-bold text-white text-sm tracking-wider">TECNICOR</span>
+          
+            <img src="/nombre.png" alt="nombrenav" className="w-30 h-30 flex relative right-5 object-contain" />
           <span className="text-[#2a2a3e] text-sm">·</span>
           <span className="font-mono-tech text-xs text-[#4a5568]">BRIEF DE PROYECTO</span>
         </div>
